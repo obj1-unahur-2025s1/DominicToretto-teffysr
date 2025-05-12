@@ -27,7 +27,7 @@ object nitrogeno {
   }
 
 }
-/***********************************************/
+/*********************OBJETOS COLORES**********************/
 object azul {
   method cambiarColor() = verde
   method sirveParaCorrer() = false 
