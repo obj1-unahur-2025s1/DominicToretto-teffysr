@@ -1,0 +1,139 @@
+import dominic.*
+import autos.*
+import combustibleYcolor.*
+
+
+describe "Tests de Dominic" {
+
+  test "Dominic compra Ferrari" {
+    dominic.comprarAuto(ferrari)
+    assert.equals(#{ferrari}, dominic.autos())
+  }
+
+  test "Dominic filtra los autos que no están en condiciones"{
+    dominic.comprarAuto(ferrari)
+    dominic.comprarAuto(rubi)
+    dominic.comprarAuto(intocable)
+    assert.equals(#{rubi, intocable}, dominic.autosNoEnCondiciones())
+  }
+
+  test "Hace pruebas de velocidad y tiene 3 autos fuera de condiciones"{
+    dominic.comprarAuto(ferrari)
+    dominic.comprarAuto(rubi)
+    dominic.comprarAuto(intocable)
+    dominic.pruebaDeVelocidad()
+    assert.equals(3, dominic.autosNoEnCondiciones().size())
+  }
+
+  test "Dominic compra Flecha Rubí e intocable y calcula promedio de velocidades máximas"{
+    dominic.comprarAuto(rubi)
+    dominic.comprarAuto(intocable)
+    assert.equals(127.5, dominic.promedioDeVelocidadMaxima())
+  }
+
+  test "Dominic consulta velocidad máxima de autos en condiciones"{
+    dominic.comprarAuto(ferrari)
+    dominic.comprarAuto(rubi)
+    dominic.comprarAuto(intocable)
+    assert.equals(125, dominic.autoMasRapidoEnCondiciones().velocidadMaxima())
+  }
+
+  test "Dominic verifica que la velocidad máxima del auto en condiciones sea doble del promedio"{
+    dominic.comprarAuto(ferrari)
+    dominic.comprarAuto(rubi)
+    dominic.comprarAuto(intocable)
+    assert.notThat(dominic.velocidadMaxEsMayorAlDobleDelPromedio())
+  }
+}
+
+describe "Test de taller"{
+  test "El taller tiene 3 autos para reparar luego de pruebas de velocidad"{
+    dominic.comprarAuto(ferrari)
+    dominic.comprarAuto(rubi)
+    dominic.comprarAuto(intocable)
+    dominic.pruebaDeVelocidad()
+    dominic.enviarATaller()
+    assert.equals(3, taller.autosAReparar().size())
+  }
+
+  test "El taller repara todos los autos y no tiene más autos en cola"{
+    dominic.comprarAuto(ferrari)
+    dominic.comprarAuto(rubi)
+    dominic.comprarAuto(intocable)
+    dominic.pruebaDeVelocidad()
+    dominic.enviarATaller()
+    taller.reparaAutos()
+    assert.equals(#{}, taller.autosAReparar())
+  }
+
+}
+
+describe "Tests de Ferrari"{
+  test "Está en condiciones al inicio"{
+    assert.that(ferrari.estaEnCondiciones())
+  }
+
+  test "Al reparar tiene un motor al 100%"{
+    ferrari.reparar()
+    assert.equals(100, ferrari.motorFuncionando())
+  }
+
+  test "Velocidad Máxima al inicio"{
+    assert.equals(125, ferrari.velocidadMaxima())
+  }
+
+  test "Velocidad Máxima después de prueba"{
+    ferrari.pruebaDeVelocidad()
+    assert.equals(110, ferrari.velocidadMaxima())
+  }
+
+  test "Rendimiento de motor en 0 después de 3 pruebas desde condición inicial"{
+    ferrari.pruebaDeVelocidad()
+    ferrari.pruebaDeVelocidad()
+    ferrari.pruebaDeVelocidad()
+    assert.equals(0, ferrari.motorFuncionando())
+  }
+}
+
+describe "Tests de Flecha Rubi"{
+  test "No está en condiciones de correr al inicio"{
+    assert.notThat(rubi.estaEnCondiciones())
+  }
+
+  test "Cambia a color rojo y está en condiciones de correr"{
+    rubi.color(rojo)
+    assert.that(rubi.estaEnCondiciones())
+  }
+
+  test "Reparación desde inicio la deja verde"{
+    rubi.reparar()
+    assert.equals(verde, rubi.color())
+  }
+
+  test "Reparación duplica el nivel de combustible"{
+    rubi.reparar()
+    assert.equals(200, rubi.nivelDeConbustible())
+  }
+
+  test "Velocidad máxima inicial con gasolina"{
+    assert.equals(210, rubi.velocidadMaxima())
+  }
+
+  test "Velocidad máxima inicial con nafta"{
+    rubi.cambiarCombustible(nafta)
+    assert.equals(180, rubi.velocidadMaxima())
+  }
+
+  test "Velocidad máxima inicial con nitrógeno líquido"{
+    rubi.cambiarCombustible(nitrogeno)
+    assert.equals(2000, rubi.velocidadMaxima())
+  }
+}
+
+describe "Tests de Intocable"{
+  test "Intocable deja de estar en condiciones luego de prueba de velocidad"{
+    intocable.pruebaDeVelocidad()
+    assert.notThat(intocable.estaEnCondiciones())
+  }
+}
+
